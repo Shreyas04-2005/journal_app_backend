@@ -36,7 +36,6 @@ public class PublicController {
 @GetMapping("/health-check")
 public String healthcheck(){
     return "OK";
-    
 }
 
 @PostMapping("/signup")
