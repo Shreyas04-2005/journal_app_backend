@@ -41,7 +41,6 @@ public String healthcheck(){
 @PostMapping("/signup")
 public void signup(@RequestBody User user){
     userService.savenewUser(user);
-    
 }
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user){
