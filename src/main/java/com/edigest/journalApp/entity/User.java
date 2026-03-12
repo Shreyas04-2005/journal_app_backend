@@ -1,8 +1,9 @@
 package com.edigest.journalApp.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.bson.types.ObjectId;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -19,12 +20,13 @@ import java.util.List;
 public class User {
 
     @Id
-    private ObjectId id;
-    @Indexed(unique = true)
+    private String id;
 
+    @Indexed(unique = true)
     @NonNull
     private String username;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NonNull
     private String password;
 

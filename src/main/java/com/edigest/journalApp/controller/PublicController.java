@@ -5,6 +5,7 @@ import com.edigest.journalApp.service.UserDetailsServiceImpl;
 import com.edigest.journalApp.service.UserService;
 import com.edigest.journalApp.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,21 +36,38 @@ public class PublicController {
 
 @GetMapping("/health-check")
 public String healthcheck(){
-    return "OK";
+    return "Welcome back";
 }
 
 @PostMapping("/signup")
-public void signup(@RequestBody User user){
-    userService.savenewUser(user);
-    
+public ResponseEntity<String> signup(@RequestBody User user){
+    String name=user.getUsername();
+    String password=user.getPassword();
+    if(name==null || password==null){
+        return new ResponseEntity<>("username and password required",HttpStatus.BAD_REQUEST);
+    }
+    else if( userService.savenewUser(user)){
+        System.out.println("Registration successfull");
+        return new ResponseEntity<>("Registration successfull \n"+
+               "UserId :" +user.getId()+"\n"+
+                "UserName :"+user.getUsername()+"\n"+
+                "journalEntries :"+user.getJournalEntries(),HttpStatus.CREATED);
+    }
+        return new ResponseEntity<>("Username already taken",HttpStatus.BAD_REQUEST);
 }
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user){
+        System.out.println(user);
+    String name=user.getUsername();
+    String password=user.getPassword();
+    if(name==null || password==null){
+        return  new ResponseEntity<>("username and password required",HttpStatus.BAD_REQUEST);
+    }
     try {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
         String jwt=jwtUtil.generateToken(userDetails.getUsername());
-        return new ResponseEntity<>(jwt,HttpStatus.OK);
+        return new ResponseEntity<>("access token :"+jwt,HttpStatus.OK);
     } catch (Exception e){
         log.error("Exception occurred while createAuthenticationToken",e);
         return new ResponseEntity<>("Incorrect username or password",HttpStatus.BAD_REQUEST);

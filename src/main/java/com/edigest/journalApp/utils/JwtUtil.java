@@ -43,7 +43,7 @@ public class JwtUtil {
     public String createToken(Map<String,Object>claims,String subject) {
         return Jwts.builder().claims(claims).subject(subject).header().empty().add("typ","JWT")
                 .and().issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+1000*60*60))// 60 min time for expiry of jwt token
+                .expiration(new Date(System.currentTimeMillis()+1000*60*15))// 60 min time for expiry of jwt token
                 .signWith(getSigningkey()).compact();
     }
 

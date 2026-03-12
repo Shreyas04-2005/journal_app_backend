@@ -7,6 +7,8 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -28,6 +30,12 @@ public class UserService {
 
     public boolean savenewUser(User user){
         try {
+            User exisingUser=userRepository.findByusername(user.getUsername());
+            if(exisingUser!=null){
+                log.error("username already taken");
+                return false;
+            }
+
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(Arrays.asList("USER"));
             userRepository.save(user);
@@ -42,10 +50,14 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void saveAdmin(User user){
+    public ResponseEntity<String> saveAdmin(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Arrays.asList("USER","ADMIN"));
         userRepository.save(user);
+        return new ResponseEntity<>("Admin created \n"+
+                "userId :"+user.getId()+"\n"+
+                "UserName :"+user.getUsername()+"\n"
+                , HttpStatus.CREATED);
     }
 
 
@@ -66,5 +78,3 @@ public class UserService {
     }
 
 }
-//controller (calls) -> service (calls) ->repository
-//service is used for buisness logic
