@@ -13,6 +13,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/public")
@@ -54,8 +57,7 @@ public ResponseEntity<String> signup(@RequestBody User user){
         return new ResponseEntity<>("Username already taken",HttpStatus.BAD_REQUEST);
 }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user){
-        System.out.println(user);
+    public ResponseEntity<?> login(@RequestBody User user){
     String name=user.getUsername();
     String password=user.getPassword();
     if(name==null || password==null){
@@ -65,7 +67,10 @@ public ResponseEntity<String> signup(@RequestBody User user){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
         String jwt=jwtUtil.generateToken(userDetails.getUsername());
-        return new ResponseEntity<>("access token :"+jwt,HttpStatus.OK);
+        Map<String, String> response = new HashMap<>();
+        response.put("token", jwt);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception e){
         log.error("Exception occurred while createAuthenticationToken",e);
         return new ResponseEntity<>("Incorrect username or password",HttpStatus.BAD_REQUEST);

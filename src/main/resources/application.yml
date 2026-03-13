@@ -34,6 +34,6 @@ weather:
     key: ${weather_api_key}
 
 
-
+JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
 
