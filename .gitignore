@@ -19,6 +19,7 @@ target/
 *.iml
 *.ipr
 *.log
+*.cmd
 *.mvnw.cmd
 
 ### NetBeans ###
