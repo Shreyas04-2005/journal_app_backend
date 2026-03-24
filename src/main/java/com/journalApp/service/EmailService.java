@@ -22,6 +22,7 @@ public class EmailService {
             javaMailSender.send(mail); //the javamailsender is a mailsender by java by adding its dependencies
         }catch(Exception e){
             log.error("Exception while sendEmail",e);
+            throw new RuntimeException("Invalid email"+e);
         }
     }
 

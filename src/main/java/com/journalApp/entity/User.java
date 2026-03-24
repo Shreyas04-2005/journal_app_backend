@@ -2,6 +2,7 @@ package com.journalApp.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -29,6 +30,7 @@ public class User {
     @NonNull
     private String password;
 
+    @Email
     private String email;
 
     private Boolean sentimentAnalysis;

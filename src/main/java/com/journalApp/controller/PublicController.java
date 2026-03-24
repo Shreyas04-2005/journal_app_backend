@@ -1,6 +1,7 @@
 package com.journalApp.controller;
 
 import com.journalApp.entity.User;
+import com.journalApp.service.EmailService;
 import com.journalApp.service.UserDetailsServiceImpl;
 import com.journalApp.service.UserService;
 import com.journalApp.utils.JwtUtil;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -24,6 +26,9 @@ public class PublicController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -40,6 +45,7 @@ public String healthcheck(){
     return "Welcome back";
 }
 
+@Transactional
 @PostMapping("/signup")
 public ResponseEntity<String> signup(@RequestBody User user){
     String name=user.getUsername();
@@ -48,6 +54,14 @@ public ResponseEntity<String> signup(@RequestBody User user){
         return new ResponseEntity<>("username and password required",HttpStatus.BAD_REQUEST);
     }
     else if( userService.savenewUser(user)){
+        if(user.getEmail()!=null) {
+            try {
+                emailService.sendEmail(user.getEmail(), "Welcome to JournalApp " + user.getUsername() + " 🚀", "You have successfully registered to journalApp, now you can create journals for your daily schedule to improve yourself. \n Get the best of you✅");
+                System.out.println("mail send to " + user.getEmail());
+            }catch (Exception e){
+                throw new RuntimeException("Error while sending mail"+e);
+            }
+        }
         System.out.println("Registration successfull");
         return new ResponseEntity<>("Registration successfull \n"+
                "UserId :" +user.getId()+"\n"+

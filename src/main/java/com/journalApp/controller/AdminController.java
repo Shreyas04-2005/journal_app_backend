@@ -72,7 +72,7 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/deleteById")
+    @DeleteMapping("/deleteById/{id}")
     public ResponseEntity<?>deleteUserById(@PathVariable("id")String id){
         if(id==null || id.isEmpty()){
             return  new ResponseEntity<>("id required in path",HttpStatus.BAD_REQUEST);
