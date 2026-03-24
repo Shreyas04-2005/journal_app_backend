@@ -58,11 +58,6 @@ public ResponseEntity<String> signup(@RequestBody User user){
 }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user){
-    String name=user.getUsername();
-    String password=user.getPassword();
-    if(name==null || password==null){
-        return  new ResponseEntity<>("username and password required",HttpStatus.BAD_REQUEST);
-    }
     try {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());

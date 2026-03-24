@@ -62,8 +62,9 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findbyid(ObjectId id){
-        return userRepository.findById(id);
+    public User getUserById(ObjectId id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public void deleteById(ObjectId id){
@@ -74,4 +75,19 @@ public class UserService {
         return userRepository.findByusername(username);
     }
 
-}
+    public User updateUser(String id, User body) {
+        ObjectId objectId=new ObjectId(id);
+        User existingUser=userRepository.findById(objectId).orElseThrow(()->new RuntimeException("User not found"));
+
+        if(body.getUsername()!=null){
+            existingUser.setUsername(body.getUsername());
+        }
+        if(body.getPassword()!=null){
+            existingUser.setPassword(body.getPassword());
+        }
+        if(body.getEmail()!=null){
+            existingUser.setEmail(body.getEmail());
+        }
+       return userRepository.save(existingUser);
+    }
+};
