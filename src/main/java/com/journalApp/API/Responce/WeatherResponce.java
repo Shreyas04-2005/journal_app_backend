@@ -8,7 +8,8 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter
-@Setter public class WeatherResponce {
+@Setter
+public class WeatherResponce {
 
     private Current current;
 
