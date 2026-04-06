@@ -3,6 +3,7 @@ package com.journalApp.service;
 import com.journalApp.entity.User;
 import com.journalApp.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,11 +65,11 @@ public class UserService {
 
     public User getUserById(ObjectId id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id "+id));
     }
 
     public void deleteById(ObjectId id){
-        userRepository.deleteById(id);
+         userRepository.deleteById(id);
     }
 
     public User findByusername(String username){
@@ -77,7 +78,7 @@ public class UserService {
 
     public User updateUser(String id, User body) {
         ObjectId objectId=new ObjectId(id);
-        User existingUser=userRepository.findById(objectId).orElseThrow(()->new RuntimeException("User not found"));
+        User existingUser=userRepository.findById(objectId).orElseThrow(()->new ResourceNotFoundException("User not found"));
 
         if(body.getUsername()!=null){
             existingUser.setUsername(body.getUsername());

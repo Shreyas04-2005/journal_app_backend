@@ -4,6 +4,7 @@ import com.journalApp.cache.Appcache;
 import com.journalApp.entity.User;
 import com.journalApp.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,16 +82,10 @@ public class AdminController {
             return new ResponseEntity<>("Invalid ObjectId format", HttpStatus.BAD_REQUEST);
         }
         ObjectId objectId = new ObjectId(id);
-        User user=userService.getUserById(objectId);
-        if(user==null){
-            log.error("User not found");
-            return  new ResponseEntity<>("User not found",HttpStatus.NOT_FOUND);
-        }
+        userService.getUserById(objectId);
+
          userService.deleteById(objectId);
-        Map<String,Object> response = new HashMap<>();
-        response.put("message","User deleted");
-        response.put("user",user);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>("User deleted",HttpStatus.OK);
 
     }
 
