@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     private static final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
@@ -76,6 +80,7 @@ public class UserService {
         return userRepository.findByusername(username);
     }
 
+    @Transactional
     public User updateUser(String id, User body) {
         ObjectId objectId=new ObjectId(id);
         User existingUser=userRepository.findById(objectId).orElseThrow(()->new ResourceNotFoundException("User not found"));
@@ -87,8 +92,10 @@ public class UserService {
             existingUser.setPassword(body.getPassword());
         }
         if(body.getEmail()!=null){
+            emailService.sendEmail(existingUser.getEmail(),"Changing Email 🔗","Hi "+existingUser.getUsername()+" we are informing that you have changed your email,\n From now all the new emails are sent to your new email "+body.getEmail()+".\n"+"If its not u then click on the link below , thank you.");
+            emailService.sendEmail(body.getEmail(), "Welcome to JournalApp " + body.getUsername() + " 🚀", "You have successfully registered to journalApp, now you can create journals for your daily schedule to improve yourself. \n Get the best of you✅");
             existingUser.setEmail(body.getEmail());
         }
        return userRepository.save(existingUser);
     }
-};
+}

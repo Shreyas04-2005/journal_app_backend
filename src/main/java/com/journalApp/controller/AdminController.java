@@ -66,8 +66,8 @@ public class AdminController {
     @PatchMapping("/updateById/{id}")
     public  ResponseEntity<?>updateById(@PathVariable("id")String id,@RequestBody User body){
         try {
-            User updatedUser = userService.updateUser(id, body);
-            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+            userService.updateUser(id, body);
+            return new ResponseEntity<>("User Updated", HttpStatus.OK);
         }catch(RuntimeException ex){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
