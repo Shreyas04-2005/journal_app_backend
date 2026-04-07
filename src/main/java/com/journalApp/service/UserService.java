@@ -1,5 +1,6 @@
 package com.journalApp.service;
 
+import com.journalApp.dto.CreateUserDto;
 import com.journalApp.entity.User;
 import com.journalApp.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service  //we can use component annotation here but service is used for readability
 @Slf4j
@@ -30,22 +30,37 @@ public class UserService {
     private static final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
 
-    public boolean savenewUser(User user){
-        try {
-            User exisingUser=userRepository.findByusername(user.getUsername());
-            if(exisingUser!=null){
-                log.error("username already taken");
-                return false;
-            }
+    @Transactional
+    public User registerUser(CreateUserDto dto) {
 
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoles(Arrays.asList("USER"));
-            userRepository.save(user);
-            return true;
-        } catch (Exception e) {
-            log.error("Exception occurred while creating user"+e);
-           return false;
+        if (userRepository.existsByUsername(dto.getUsername()) || userRepository.existsByEmail(dto.getEmail())) {
+            return null;
         }
+
+
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setEmail(dto.getEmail());
+        user.setRoles(List.of("USER"));
+        boolean sentimentValue=Boolean.TRUE.equals(dto.getSentimentAnalysis());
+        user.setSentimentAnalysis(sentimentValue);
+
+        userRepository.save(user);
+
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            try {
+                emailService.sendEmail(
+                        dto.getEmail(),
+                        "Welcome to JournalApp 🚀",
+                        "You have successfully registered to JournalApp."
+                );
+            } catch (Exception e) {
+                log.error("Email sending failed", e);
+            }
+        }
+
+        return user;
     }
 
     public void saveuser(User user){
@@ -77,7 +92,7 @@ public class UserService {
     }
 
     public User findByusername(String username){
-        return userRepository.findByusername(username);
+        return userRepository.findByUsername(username);
     }
 
     @Transactional

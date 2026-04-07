@@ -1,7 +1,7 @@
 package com.journalApp.service;
 
 import com.journalApp.API.Responce.WeatherResponce;
-import com.journalApp.Constants.Placeholders;
+import com.journalApp.constants.Placeholders;
 import com.journalApp.cache.Appcache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

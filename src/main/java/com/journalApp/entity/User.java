@@ -2,7 +2,9 @@ package com.journalApp.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.journalApp.enums.Sentiment;
 import jakarta.validation.constraints.Email;
+import jdk.jfr.BooleanFlag;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -30,11 +32,11 @@ public class User {
     @NonNull
     private String password;
 
+    @Indexed(unique = true)
     @Email
     private String email;
 
-    private Boolean sentimentAnalysis;
-
+    private boolean sentimentAnalysis;
 
     @DBRef
     private List<JournalEntry> journalEntries=new ArrayList<>();//reference of journal_entries to journalEntries

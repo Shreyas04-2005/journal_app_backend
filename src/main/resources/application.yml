@@ -4,8 +4,8 @@ spring:
       uri: ${mongodb_uri}
       database: ${database_name}
       auto-index-creation: true
-  active:
-    profile:
+  profiles:
+    active: ${Profile}
   main:
     allow-circular-references: true
   redis:

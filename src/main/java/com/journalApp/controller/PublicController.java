@@ -1,10 +1,13 @@
 package com.journalApp.controller;
 
+import com.journalApp.dto.CreateUserDto;
+import com.journalApp.dto.LoginUserDto;
 import com.journalApp.entity.User;
 import com.journalApp.service.EmailService;
 import com.journalApp.service.UserDetailsServiceImpl;
 import com.journalApp.service.UserService;
 import com.journalApp.utils.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,33 +48,24 @@ public String healthcheck(){
     return "Welcome back";
 }
 
-@Transactional
-@PostMapping("/signup")
-public ResponseEntity<String> signup(@RequestBody User user){
-    String name=user.getUsername();
-    String password=user.getPassword();
-    if(name==null || password==null){
-        return new ResponseEntity<>("username and password required",HttpStatus.BAD_REQUEST);
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody CreateUserDto userDTO) {
+
+        User user = userService.registerUser(userDTO);
+
+        if (user==null) return new ResponseEntity<>("Duplicate username or email",HttpStatus.BAD_REQUEST);
+
+        Map<String,String>userMap=new HashMap<>();
+        userMap.put("userId",user.getId());
+        userMap.put("username",userDTO.getUsername());
+        userMap.put("email",userDTO.getEmail());
+        return  ResponseEntity.status(HttpStatus.CREATED).body(userMap);
     }
-    else if( userService.savenewUser(user)){
-        if(user.getEmail()!=null) {
-            try {
-                emailService.sendEmail(user.getEmail(), "Welcome to JournalApp " + user.getUsername() + " 🚀", "You have successfully registered to journalApp, now you can create journals for your daily schedule to improve yourself. \n Get the best of you✅");
-                System.out.println("mail send to " + user.getEmail());
-            }catch (Exception e){
-                throw new RuntimeException("Error while sending mail"+e);
-            }
-        }
-        System.out.println("Registration successfull");
-        return new ResponseEntity<>("Registration successfull \n"+
-               "UserId :" +user.getId()+"\n"+
-                "UserName :"+user.getUsername()+"\n"+
-                "journalEntries :"+user.getJournalEntries(),HttpStatus.CREATED);
-    }
-        return new ResponseEntity<>("Username already taken",HttpStatus.BAD_REQUEST);
-}
+
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user){
+    public ResponseEntity<?> login(@Valid @RequestBody LoginUserDto user){
     try {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
