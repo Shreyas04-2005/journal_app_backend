@@ -5,6 +5,7 @@ import com.journalApp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,12 @@ public class Seed implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${ADMIN_USERNAME}")
+    private String adminUname;
+
+    @Value("${ADMIN_PASSWORD}")
+    private String adminPass;
+
     @Override
     public void run(String... args) throws Exception {
     seedAdmin();
@@ -31,8 +38,8 @@ public class Seed implements CommandLineRunner {
             log.info("♻ Admin or patilshreyas547@gmail.com already in use Reusing Admin");
             return;
         }
-        User admin=User.builder().username("Admin")
-                .password(passwordEncoder.encode("admin@123"))
+        User admin=User.builder().username(adminUname)
+                .password(passwordEncoder.encode(adminPass))
                 .email("patilshreyas547@gmail.com")
                 .roles(List.of("ADMIN"))
                 .sentimentAnalysis(true)

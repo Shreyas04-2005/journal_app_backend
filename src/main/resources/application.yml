@@ -36,4 +36,7 @@ weather:
 
 JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
+ADMIN_USERNAME: ${admin_username}
+ADMIN_PASSWORD: ${admin_password}
+
 
