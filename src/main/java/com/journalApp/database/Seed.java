@@ -34,8 +34,8 @@ public class Seed implements CommandLineRunner {
     }
 
     private void seedAdmin(){
-        if (userRepository.existsByUsername("Admin") || userRepository.existsByEmail("patilshreyas547@gmail.com")) {
-            log.info("♻ Admin or patilshreyas547@gmail.com already in use Reusing Admin");
+        if (userRepository.existsByUsername(adminUname) || userRepository.existsByEmail("patilshreyas547@gmail.com")) {
+            log.info("♻ username or email already in use, Reusing Admin");
             return;
         }
         User admin=User.builder().username(adminUname)
