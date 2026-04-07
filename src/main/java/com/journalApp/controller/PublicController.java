@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
@@ -56,7 +57,7 @@ public String healthcheck(){
 
         if (user==null) return new ResponseEntity<>("Duplicate username or email",HttpStatus.BAD_REQUEST);
 
-        Map<String,String>userMap=new HashMap<>();
+        Map<String,String>userMap=new LinkedHashMap<>();
         userMap.put("userId",user.getId());
         userMap.put("username",userDTO.getUsername());
         userMap.put("email",userDTO.getEmail());
