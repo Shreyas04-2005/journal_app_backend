@@ -1,9 +1,13 @@
 package com.journalApp.controller;
 
 import com.journalApp.cache.Appcache;
+import com.journalApp.dto.CreateUserDto;
+import com.journalApp.dto.UpdateUserDto;
 import com.journalApp.entity.User;
 import com.journalApp.service.UserService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,8 +43,17 @@ public class AdminController {
     }
 
     @PostMapping("/create-admin-user")
-    public void creteuser(@RequestBody User user){
-        userService.saveAdmin(user);
+    public ResponseEntity<?> creteuser(@Valid @RequestBody CreateUserDto user){
+       User admin= userService.saveAdmin(user);
+
+       if(admin==null){
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Duplicate username or email");
+       }
+        Map<String,String>userMap=new LinkedHashMap<>();
+        userMap.put("userId",admin.getId());
+        userMap.put("username",admin.getUsername());
+        userMap.put("email",admin.getEmail());
+        return  ResponseEntity.status(HttpStatus.CREATED).body(userMap);
     }
 
     @GetMapping("/clear-cache")
@@ -60,13 +74,9 @@ public class AdminController {
     }
 
     @PatchMapping("/updateById/{id}")
-    public  ResponseEntity<?>updateById(@PathVariable("id")String id,@RequestBody User body){
-        try {
+    public  ResponseEntity<?>updateById(@PathVariable("id")String id,@Valid @RequestBody UpdateUserDto body){
             userService.updateUser(id, body);
             return new ResponseEntity<>("User Updated", HttpStatus.OK);
-        }catch(RuntimeException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        }
     }
 
     @DeleteMapping("/deleteById/{id}")
@@ -78,9 +88,8 @@ public class AdminController {
             return new ResponseEntity<>("Invalid ObjectId format", HttpStatus.BAD_REQUEST);
         }
         ObjectId objectId = new ObjectId(id);
-        userService.getUserById(objectId);
-
          userService.deleteById(objectId);
+
         return new ResponseEntity<>("User deleted",HttpStatus.OK);
 
     }

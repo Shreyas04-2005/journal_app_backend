@@ -2,6 +2,7 @@ package com.journalApp.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.journalApp.dto.CreateUserDto;
 import com.journalApp.enums.Sentiment;
 import jakarta.validation.constraints.Email;
 import jdk.jfr.BooleanFlag;
@@ -42,4 +43,5 @@ public class User {
     private List<JournalEntry> journalEntries=new ArrayList<>();//reference of journal_entries to journalEntries
 
     private List<String> roles;
+
 }

@@ -1,12 +1,13 @@
 package com.journalApp.exception;
 
+import org.apache.kafka.common.errors.DuplicateResourceException;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import org.springframework.web.client.HttpClientErrorException;
 
 
 @RestControllerAdvice
@@ -27,5 +28,10 @@ public class globalException {
                 orElse("Invalid Input");
 
         return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<String>handleConflictException(DuplicateResourceException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 }

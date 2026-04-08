@@ -41,7 +41,7 @@ public class Seed implements CommandLineRunner {
         User admin=User.builder().username(adminUname)
                 .password(passwordEncoder.encode(adminPass))
                 .email("patilshreyas547@gmail.com")
-                .roles(List.of("ADMIN"))
+                .roles(List.of("USER","ADMIN"))
                 .sentimentAnalysis(true)
                 .build();
 

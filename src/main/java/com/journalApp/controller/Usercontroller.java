@@ -28,25 +28,6 @@ public class Usercontroller {
     WeatherService weatherService;
 
 
-    @PutMapping
-    public ResponseEntity<?> updateuser(@RequestBody User user){
-       Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
-        String username=authentication.getName();
-        User userIndb=userservice.findByusername(username);
-            userIndb.setUsername(user.getUsername());
-            userIndb.setPassword(user.getPassword());
-//            userservice.savenewUser(userIndb);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-
-    @DeleteMapping
-    public ResponseEntity<?> deletebyid(){
-        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
-        userRepository.deleteByUsername(authentication.getName());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
     @GetMapping
     public ResponseEntity<?> gretings(@RequestParam("city") String city){
         Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
