@@ -1,6 +1,7 @@
 package com.journalApp.service;
 
 import com.journalApp.dto.CreateUserDto;
+import com.journalApp.dto.GetUsersDto;
 import com.journalApp.dto.UpdateUserDto;
 import com.journalApp.entity.User;
 import com.journalApp.repository.UserRepository;
@@ -13,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.schema.MongoJsonSchema;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,8 +93,19 @@ public class UserService {
     }
 
 
-    public List<User> getAll(){
-        return userRepository.findAll();
+    public List<GetUsersDto> getAll(){
+        List<User>users=userRepository.findAll();
+        return users.stream().map(user ->{
+            GetUsersDto dto=new GetUsersDto();
+            dto.setId(user.getId());
+            dto.setEmail(user.getEmail());
+            dto.setUsername(user.getUsername());
+            dto.setSentimentAnalysis(user.isSentimentAnalysis());
+            dto.setUpdatedBy(user.getUpdatedBy());
+            dto.setUpdatedAt(user.getUpdatedAt());
+            return dto;
+        }).toList();
+
     }
 
     public User getUserById(ObjectId id) {
@@ -110,7 +124,7 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public User updateUser(String id, UpdateUserDto body){
+    public User updateUser(String id, UpdateUserDto body,String userName){
         ObjectId objectId=new ObjectId(id);
         User existingUser=userRepository.findById(objectId).orElseThrow(()->new ResourceNotFoundException("User not found"));
 
@@ -137,6 +151,8 @@ public class UserService {
         if(body.getSentimentAnalysis()!=null){
             existingUser.setSentimentAnalysis(body.getSentimentAnalysis());
         }
+        existingUser.setUpdatedBy(userName);
+        existingUser.setUpdatedAt(LocalDateTime.now());
        return userRepository.save(existingUser);
     }
 }

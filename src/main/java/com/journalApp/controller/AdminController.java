@@ -2,6 +2,7 @@ package com.journalApp.controller;
 
 import com.journalApp.cache.Appcache;
 import com.journalApp.dto.CreateUserDto;
+import com.journalApp.dto.GetUsersDto;
 import com.journalApp.dto.UpdateUserDto;
 import com.journalApp.entity.User;
 import com.journalApp.service.UserService;
@@ -12,6 +13,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -32,7 +35,7 @@ public class AdminController {
 
     @GetMapping("/all-users")
     public ResponseEntity<?> getAllusers() {
-        List<User> all = userService.getAll();
+        List<GetUsersDto> all = userService.getAll();
         if (all != null && !all.isEmpty()) {
             Map<String,Object> response = new HashMap<>();
             response.put("totalUsers", all.size());
@@ -70,12 +73,21 @@ public class AdminController {
             return new ResponseEntity<>("Invalid id or Invalid id format",HttpStatus.BAD_REQUEST);
         }
         User user=userService.getUserById(objectId);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+        Map<String,Object>map=new LinkedHashMap<>();
+        map.put("id",user.getId());
+        map.put("username",user.getUsername());
+        map.put("email",user.getEmail());
+        map.put("sentimentAnalysis",user.isSentimentAnalysis());
+        map.put("updatedBy",user.getUpdatedBy());
+        map.put("updatedAt",user.getUpdatedAt());
+            return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @PatchMapping("/updateById/{id}")
     public  ResponseEntity<?>updateById(@PathVariable("id")String id,@Valid @RequestBody UpdateUserDto body){
-            userService.updateUser(id, body);
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String username=authentication.getName();
+        userService.updateUser(id, body,username);
             return new ResponseEntity<>("User Updated", HttpStatus.OK);
     }
 

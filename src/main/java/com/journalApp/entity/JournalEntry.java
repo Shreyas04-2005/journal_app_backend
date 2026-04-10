@@ -1,6 +1,9 @@
 package com.journalApp.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.journalApp.enums.Sentiment;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -13,11 +16,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class JournalEntry {
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
-    @NonNull
+
+    @NotBlank
     private String title;
+
+    @NotBlank
     private String content;
-    private LocalDateTime date;
+
     private Sentiment sentiment;
 
+    private LocalDateTime date;
 }

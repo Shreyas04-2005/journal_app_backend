@@ -1,9 +1,11 @@
 package com.journalApp.service;
 
+import com.journalApp.dto.CreateJournalEntryDto;
 import com.journalApp.entity.JournalEntry;
 import com.journalApp.entity.User;
 import com.journalApp.repository.JournalEntryRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,15 +26,20 @@ public class JournalEntryService {
 
 
     @Transactional
-    public void saveEntry(JournalEntry journalEntry, String username){
+    public JournalEntry saveEntry(CreateJournalEntryDto journalEntry, String username){
         try {
             User user=userservice.findByusername(username);
-            journalEntry.setDate(LocalDateTime.now());
-            JournalEntry saved=journalEntryRepository.save(journalEntry);
+            JournalEntry entry=new JournalEntry();
+            entry.setTitle(journalEntry.getTitle());
+            entry.setContent(journalEntry.getContent());
+            entry.setSentiment(journalEntry.getSentiment());
+            entry.setDate(LocalDateTime.now());
+            JournalEntry saved=journalEntryRepository.save(entry);
             user.getJournalEntries().add(saved);
             userservice.saveuser(user);
+            return entry;
         }catch (Exception e) {
-            System.out.println(e);
+            log.error(e.getMessage());
             throw new RuntimeException("An error occurred while saving the entry.",e);
         }
     }
@@ -45,27 +52,15 @@ public class JournalEntryService {
         return journalEntryRepository.findAll();
     }
 
-    public Optional<JournalEntry> findbyid(ObjectId id){
-        return journalEntryRepository.findById(id);
+    public JournalEntry findbyid(ObjectId id){
+        return journalEntryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("journal not found with id "+id));
     }
 
-    @Transactional
-    public boolean deleteById(ObjectId id, String username){
-        boolean removed=false;
-        try {
-            User user = userservice.findByusername(username);
-             removed = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
-            if (removed) {
-                userservice.saveuser(user);
-                journalEntryRepository.deleteById(id);
-            }
 
-        }catch (Exception e){
-            log.error("Error",e);
-            throw new RuntimeException("An error occurred while deleting the entry",e);
-        }
-        return removed;
+    public JournalEntry deleteById(ObjectId id){
+        JournalEntry entry=journalEntryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("journal not found with id "+id));
+        journalEntryRepository.deleteById(id);
+        return entry;
     }
 
 }
-//controller (calls) -> service (calls) ->repository
