@@ -42,7 +42,7 @@ public class UserService {
     public User registerUser(CreateUserDto dto) {
 
         if (userRepository.existsByUsername(dto.getUsername()) || userRepository.existsByEmail(dto.getEmail())) {
-            return null;
+            throw new DuplicateResourceException("Duplicate username or email");
         }
 
         User user = new User();
@@ -103,6 +103,7 @@ public class UserService {
             dto.setSentimentAnalysis(user.isSentimentAnalysis());
             dto.setUpdatedBy(user.getUpdatedBy());
             dto.setUpdatedAt(user.getUpdatedAt());
+            dto.setRoles(user.getRoles());
             return dto;
         }).toList();
 

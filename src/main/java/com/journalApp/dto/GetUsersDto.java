@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,5 +16,6 @@ public class GetUsersDto {
         private boolean sentimentAnalysis;
         private String updatedBy;
         private LocalDateTime updatedAt;
+        private List<String>roles;
     }
 

@@ -80,6 +80,7 @@ public class AdminController {
         map.put("sentimentAnalysis",user.isSentimentAnalysis());
         map.put("updatedBy",user.getUpdatedBy());
         map.put("updatedAt",user.getUpdatedAt());
+        map.put("roles",user.getRoles());
             return new ResponseEntity<>(map, HttpStatus.OK);
     }
 

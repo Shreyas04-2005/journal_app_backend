@@ -55,8 +55,6 @@ public String healthcheck(){
 
         User user = userService.registerUser(userDTO);
 
-        if (user==null) return new ResponseEntity<>("Duplicate username or email",HttpStatus.BAD_REQUEST);
-
         Map<String,String>userMap=new LinkedHashMap<>();
         userMap.put("userId",user.getId());
         userMap.put("username",userDTO.getUsername());

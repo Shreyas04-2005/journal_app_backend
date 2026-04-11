@@ -8,10 +8,6 @@ spring:
     active: ${Profile}
   main:
     allow-circular-references: true
-  redis:
-    host: ${host_name}
-    port:
-    password: ${host_password}
   mail:
     host: notmention@gmail.com
     port: yyy

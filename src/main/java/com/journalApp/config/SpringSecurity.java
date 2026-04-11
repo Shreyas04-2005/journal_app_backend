@@ -40,6 +40,19 @@ public class SpringSecurity {
                         .requestMatchers("/journalEntry/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
+                .exceptionHandling(ex->ex
+                        .accessDeniedHandler(((req, res, ade) ->{
+                            res.setStatus(403);
+                            res.setContentType("application/json");
+                            res.getWriter().write("{\"message\":\"You are not allowed to perform this action\"}");
+                        } ))
+                        .authenticationEntryPoint((req,res,ae)->{
+                            res.setStatus(401);
+                            res.setContentType("application/json");
+                            res.getWriter().write("{\"message\":\"Please login first\"}");
+                        })
+
+                )
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

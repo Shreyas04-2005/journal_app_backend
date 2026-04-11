@@ -68,10 +68,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token expired. Please login again.");
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"Token expired. Please login again.\"}");
         } catch (JwtException | IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid token.");
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"Invalid token\"}");
         }
     }
 }

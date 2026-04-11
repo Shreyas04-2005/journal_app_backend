@@ -24,10 +24,10 @@ public class WeatherService {
    private Appcache AppCache;
 
     public WeatherResponce getweather(String city) {
-        String finalAPI = AppCache.appCache.get(Appcache.Keys.WEATHER_API.name()).replace(Placeholders.CITY,city).replace(Placeholders.API_KEY,apiKey);
-        ResponseEntity<WeatherResponce> response = restTemplate.exchange(finalAPI, HttpMethod.GET, null, WeatherResponce.class);//json to pogo
-        WeatherResponce body=response.getBody();
-        return body;
+            String finalAPI = AppCache.appCache.get(Appcache.Keys.WEATHER_API.name()).replace(Placeholders.CITY, city).replace(Placeholders.API_KEY, apiKey);
+            ResponseEntity<WeatherResponce> response = restTemplate.exchange(finalAPI, HttpMethod.GET, null, WeatherResponce.class);//json to pogo
+            WeatherResponce body = response.getBody();
+            return body;
     }
 
 

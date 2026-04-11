@@ -29,6 +29,5 @@ public RestTemplate restTemplate(){
 }
 
 }
-//platformTransactionManager
-//mongoTransactionManager
+
 
