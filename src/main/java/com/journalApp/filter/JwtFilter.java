@@ -44,7 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
     //bucket for all default endpoint
     private Bucket defaultBucket(){
         return Bucket.builder()
-                .addLimit(Bandwidth.simple(50,Duration.ofMinutes(1)))
+                .addLimit(Bandwidth.simple(30,Duration.ofMinutes(1)))
                 .build();
     }
 
