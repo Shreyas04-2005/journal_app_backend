@@ -22,8 +22,6 @@ spring:
 
 server:
   port: xxyy
-  servlet:
-    context-path: ${/path}
 
 weather:
   api:
