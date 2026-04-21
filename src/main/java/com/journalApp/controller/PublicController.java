@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -45,8 +46,12 @@ public class PublicController {
 
 
 @GetMapping("/health-check")
-public String healthcheck(){
-    return "Welcome back";
+public ResponseEntity<?> healthcheck(){
+    Map<String,Object>map=new HashMap<>();
+    map.put("Status","UP");
+    map.put("application", "Journal App Backend");
+    map.put("timestamp", LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.OK).body(map);
 }
 
 
