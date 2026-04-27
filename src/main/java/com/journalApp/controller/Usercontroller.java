@@ -14,6 +14,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.JobKOctets;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -32,14 +37,14 @@ public class Usercontroller {
     @GetMapping
     public ResponseEntity<?> gretings(@RequestParam("city") String city) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        WeatherResponce weatherResponce = weatherService.getweather(city);
-        String greting = "";
+        WeatherResponce weatherResponse = weatherService.getweather(city);
 
-            greting = ", Weather feels like " + weatherResponce.getCurrent().getFeelsLike() + "\n" +
-                    "Temperature is " + weatherResponce.getCurrent().getTemperature() + "°C" + "\n" +
-                    "Environment is like " + weatherResponce.getCurrent().getWeatherDescriptions() + "\n" +
-                    "In " + city;
-            return new ResponseEntity<>("Hi " + authentication.getName() + greting, HttpStatus.OK);
-
+        Map<String, Object>response=new LinkedHashMap<>();
+        response.put("user", authentication.getName());
+        response.put("city", city);
+        response.put("feelsLike", weatherResponse.getCurrent().getFeelsLike());
+        response.put("temperature", weatherResponse.getCurrent().getTemperature() + "°C");
+        response.put("description", weatherResponse.getCurrent().getWeatherDescriptions());
+        return ResponseEntity.status(200).body(response);
     }
 }

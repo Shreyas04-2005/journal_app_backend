@@ -25,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service  //we can use component annotation here but service is used for readability
 @Slf4j
@@ -199,7 +196,7 @@ public class UserService {
     public ResponseEntity<?>resetPassword(ResetPasswordDto dto){
         //check new and confirm password
         if(!dto.getNewPassword().equals(dto.getConfirmNewPassword())){
-            return ResponseEntity.status(400).body("newPassword and confirmNewPassword should be same");
+            return ResponseEntity.status(400).body("Passwords do not match");
         }
 
         //get token
