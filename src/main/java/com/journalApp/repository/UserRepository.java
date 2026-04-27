@@ -4,6 +4,8 @@ import com.journalApp.entity.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Optional;
+
 public interface UserRepository extends MongoRepository<User, ObjectId> { //Repository interface is used for communicate with database by defining services with mongorepository
     User findByUsername(String username);
 
@@ -12,6 +14,9 @@ public interface UserRepository extends MongoRepository<User, ObjectId> { //Repo
     void deleteByUsername(String username);
 
     Boolean existsByEmail(String email);
+
+    Optional<User> findByEmail(String email);
+
 }
 
 

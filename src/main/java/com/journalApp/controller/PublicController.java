@@ -2,6 +2,7 @@ package com.journalApp.controller;
 
 import com.journalApp.dto.CreateUserDto;
 import com.journalApp.dto.LoginUserDto;
+import com.journalApp.dto.ResetPasswordDto;
 import com.journalApp.entity.User;
 import com.journalApp.service.EmailService;
 import com.journalApp.service.UserDetailsServiceImpl;
@@ -83,4 +84,13 @@ public ResponseEntity<?> healthcheck(){
         return new ResponseEntity<>("Incorrect username or password",HttpStatus.BAD_REQUEST);
     }
 }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?>forgotPassword(@RequestParam("email")String email){
+        return userService.forgotPassword(email);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?>resetPassword(@Valid @RequestBody ResetPasswordDto dto){
+        return userService.resetPassword(dto);
+    }
 }

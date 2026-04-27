@@ -79,7 +79,7 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (Exception e) {
-               //handle by validation
+                System.out.println("JWT ERROR: " + e.getMessage());
             }
         }
 

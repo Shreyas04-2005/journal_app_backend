@@ -2,8 +2,11 @@ package com.journalApp.service;
 
 import com.journalApp.dto.CreateUserDto;
 import com.journalApp.dto.GetUsersDto;
+import com.journalApp.dto.ResetPasswordDto;
 import com.journalApp.dto.UpdateUserDto;
+import com.journalApp.entity.PasswordResetToken;
 import com.journalApp.entity.User;
+import com.journalApp.repository.PasswordRepository;
 import com.journalApp.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -24,6 +27,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service  //we can use component annotation here but service is used for readability
 @Slf4j
@@ -34,6 +39,9 @@ public class UserService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private PasswordRepository passwordRepository;
 
     private static final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
@@ -155,5 +163,68 @@ public class UserService {
         existingUser.setUpdatedBy(userName);
         existingUser.setUpdatedAt(LocalDateTime.now());
        return userRepository.save(existingUser);
+    }
+
+    public ResponseEntity<?>forgotPassword(String email){
+        Optional<User> existUser =userRepository.findByEmail(email);
+        if(existUser.isEmpty()){
+            return ResponseEntity.status(200).body("If the email exist, the reset link has been sent✅");
+        }
+
+        User user=existUser.get();
+
+        //create random token
+        String token= UUID.randomUUID().toString();
+
+        //token expiry
+        LocalDateTime expiry=LocalDateTime.now().plusMinutes(15);
+
+        //save token
+        PasswordResetToken passwordResetToken=new PasswordResetToken();
+        passwordResetToken.setUserId(user.getId());
+        passwordResetToken.setToken(token);
+        passwordResetToken.setExpiryDate(expiry);
+
+        passwordRepository.save(passwordResetToken);
+
+        //reset link with token
+        String resetLink="https://journal-app-frontend.com/forgot-pasword?token=" + token;
+
+        //send mail
+        emailService.sendEmail(email,"Reset Password⚙","Click here to reset password: "+resetLink+" the link is expired in 15 minutes");
+
+        return ResponseEntity.status(200).body("If the email exist, the reset link has been sent✅");
+    }
+
+    public ResponseEntity<?>resetPassword(ResetPasswordDto dto){
+        //check new and confirm password
+        if(!dto.getNewPassword().equals(dto.getConfirmNewPassword())){
+            return ResponseEntity.status(400).body("newPassword and confirmNewPassword should be same");
+        }
+
+        //get token
+        Optional<PasswordResetToken>token=passwordRepository.findByToken(dto.getToken());
+        if (token.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid token");
+        }
+
+        //get token info
+        PasswordResetToken resetToken=token.get();
+
+        //check expiry
+        if(resetToken.getExpiryDate().isBefore(LocalDateTime.now())){
+            return ResponseEntity.status(400).body("Token expired");
+        }
+
+        //find and update user
+        ObjectId id=new ObjectId(resetToken.getUserId());
+        User user=userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User not found with id "+id));
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+
+        //delete token after update
+        passwordRepository.delete(resetToken);
+
+        return ResponseEntity.status(200).body("Password reset successful✅");
     }
 }

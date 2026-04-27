@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 
 @RestControllerAdvice
@@ -60,6 +61,11 @@ public class globalException {
         String body="{\"message\": \""+ex.getMessage()+"\"}";
 
         return new ResponseEntity<>(body,HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<?> handleNotFound() {
+        return ResponseEntity.status(404).body("Endpoint not found ❌");
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
