@@ -61,10 +61,18 @@ public ResponseEntity<?> healthcheck(){
 
         User user = userService.registerUser(userDTO);
 
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            emailService.sendEmailAsync(
+                    user.getEmail(),
+                    "Welcome to JournalApp 🚀",
+                    "You have successfully registered to JournalApp."
+            );
+        }
+
         Map<String,String>userMap=new LinkedHashMap<>();
         userMap.put("userId",user.getId());
-        userMap.put("username",userDTO.getUsername());
-        userMap.put("email",userDTO.getEmail());
+        userMap.put("username",user.getUsername());
+        userMap.put("email",user.getEmail());
         return  ResponseEntity.status(HttpStatus.CREATED).body(userMap);
     }
 

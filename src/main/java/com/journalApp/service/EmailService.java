@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -22,7 +23,16 @@ public class EmailService {
             javaMailSender.send(mail); //the javamailsender is a mailsender by java by adding its dependencies
         }catch(Exception e){
             log.error("Exception while sendEmail",e);
-            throw new RuntimeException("Invalid email"+e);
+        }
+    }
+
+    @Async
+    public void sendEmailAsync(String to, String subject, String body) {
+        try {
+            sendEmail(to, subject, body);
+            log.info("Email sent successfully to {}", to);
+        } catch (Exception e) {
+            log.error("Email sending failed for {}", to, e);
         }
     }
 

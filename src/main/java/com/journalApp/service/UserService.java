@@ -60,18 +60,6 @@ public class UserService {
 
         userRepository.save(user);
 
-        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
-            try {
-                emailService.sendEmail(
-                        dto.getEmail(),
-                        "Welcome to JournalApp 🚀",
-                        "You have successfully registered to JournalApp."
-                );
-            } catch (Exception e) {
-                log.error("Email sending failed", e);
-            }
-        }
-
         return user;
     }
 
