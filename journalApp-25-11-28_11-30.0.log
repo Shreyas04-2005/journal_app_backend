@@ -1,6 +1,0 @@
-25-11-28 11:30:05.677 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[.[localhost].[/journal] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-25-11-28 11:30:05.704 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-25-11-28 11:30:05.712 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 6 ms
-25-11-28 11:30:27.434 [SpringApplicationShutdownHook] INFO  o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
-25-11-28 11:30:55.931 [main] INFO  c.e.journalApp.JournalApplication - Starting JournalApplication using Java 23.0.1 with PID 9344 (C:\Users\User\Downloads\SpringBoot\journalApp\target\classes started by User in C:\Users\User\Downloads\SpringBoot\journalApp)
-25-11-28 11:30:55.942 [main] INFO  c.e.journalApp.JournalApplication - No active profile set, falling back to 1 default profile: "default"

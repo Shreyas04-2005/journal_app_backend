@@ -1,2 +1,0 @@
-25-02-18 20:25:57.848 [main] INFO  c.e.journalApp.JournalApplication - Starting JournalApplication using Java 23.0.1 with PID 8812 (C:\Users\User\Downloads\SpringBoot\journalApp\target\classes started by User in C:\Users\User\Downloads\SpringBoot\journalApp)
-25-02-18 20:25:57.935 [main] INFO  c.e.journalApp.JournalApplication - No active profile set, falling back to 1 default profile: "default"
