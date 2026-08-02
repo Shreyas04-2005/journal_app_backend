@@ -1,0 +1,2 @@
+25-01-24 20:55:59.348 [main] INFO  c.e.journalApp.JournalApplication - Starting JournalApplication using Java 23.0.1 with PID 1192 (C:\Users\User\Downloads\SpringBoot\journalApp\target\classes started by User in C:\Users\User\Downloads\SpringBoot\journalApp)
+25-01-24 20:55:59.369 [main] INFO  c.e.journalApp.JournalApplication - The following 1 profile is active: "dev"

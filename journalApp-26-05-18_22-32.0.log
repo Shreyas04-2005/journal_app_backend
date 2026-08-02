@@ -1,0 +1,3 @@
+26-05-18 22:32:56.255 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+26-05-18 22:32:56.737 [main] INFO  com.journalApp.JournalApplication - Starting JournalApplication using Java 23.0.1 with PID 7200 (C:\Users\User\Downloads\SpringBoot\journalApp\target\classes started by User in C:\Users\User\Downloads\SpringBoot\journalApp)
+26-05-18 22:32:56.740 [main] INFO  com.journalApp.JournalApplication - The following 1 profile is active: "dev"

@@ -1,0 +1,6 @@
+26-03-12 13:35:01.198 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+26-03-12 13:35:01.265 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/journal'
+26-03-12 13:35:01.317 [main] INFO  com.journalApp.JournalApplication - Started JournalApplication in 15.619 seconds (process running for 17.433)
+26-03-12 13:35:13.386 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[.[localhost].[/journal] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+26-03-12 13:35:13.388 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+26-03-12 13:35:13.398 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 4 ms

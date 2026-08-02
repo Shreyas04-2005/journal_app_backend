@@ -1,8 +1,7 @@
 package com.journalApp.exception;
 
-import jakarta.mail.Header;
-import org.apache.kafka.common.errors.DuplicateResourceException;
-import org.apache.kafka.common.errors.ResourceNotFoundException;
+import com.journalApp.exception.individualException.DuplicateResourceException;
+import com.journalApp.exception.individualException.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

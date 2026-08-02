@@ -1,0 +1,41 @@
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  data:
+    mongodb:
+      uri: ${mongodb_uri}
+      database: ${database_name}
+      auto-index-creation: true
+  profiles:
+    active: ${Profile}
+  main:
+    allow-circular-references: true
+  mail:
+    host: notmention@gmail.com
+    port: yyy
+    username: notmention@gmail.com
+    password: xxxx yyyy xxxx yyyy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: xxyy
+
+weather:
+  api:
+    key: ${weather_api_key}
+
+
+JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
+ADMIN_USERNAME: ${admin_username}
+ADMIN_PASSWORD: ${admin_password}
+
+
