@@ -1,9 +1,6 @@
 package com.journalApp.service;
 
-import com.journalApp.dto.CreateUserDto;
-import com.journalApp.dto.GetUsersDto;
-import com.journalApp.dto.ResetPasswordDto;
-import com.journalApp.dto.UpdateUserDto;
+import com.journalApp.dto.*;
 import com.journalApp.entity.PasswordResetToken;
 import com.journalApp.entity.User;
 import com.journalApp.exception.individualException.DuplicateResourceException;
@@ -11,8 +8,10 @@ import com.journalApp.exception.individualException.ResourceNotFoundException;
 import com.journalApp.repository.PasswordRepository;
 import com.journalApp.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -107,6 +106,31 @@ public class UserService {
          if(user!=null){
              userRepository.deleteById(id);
          }
+    }
+
+    public User updateProfile(String username, UpdateSelfProfileDto body){
+        User existingUser=userRepository.findByUsername(username);
+        if(existingUser == null){
+            throw new ResourceNotFoundException("User not found");
+        }
+        if(body.getUsername()!=null){
+            User newUserName=userRepository.findByUsername(body.getUsername());
+            if(newUserName!=null && !newUserName.getId().equals(existingUser.getId())){
+                throw new DuplicateResourceException("Username already exists");
+            }
+            existingUser.setUsername(body.getUsername());
+        }
+        if(body.getEmail()!=null){
+            if(!body.getEmail().equals(existingUser.getEmail())
+                    && userRepository.existsByEmail(body.getEmail())){
+                    throw new DuplicateResourceException("Email already exists");
+            }
+            existingUser.setEmail(body.getEmail());
+        }
+        if(body.getSentimentAnalysis()!=null){
+            existingUser.setSentimentAnalysis(body.getSentimentAnalysis());
+        }
+    return userRepository.save(existingUser);
     }
 
     public User findByusername(String username){
